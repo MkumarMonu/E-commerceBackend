@@ -90,19 +90,44 @@ const getProductById = async (req, res) => {
   }
 };
 
+// Get all products with categories
+const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find().populate("categoryId", "categoryName");
+    res.status(200).json({success:true, message:"All product fetched successfully", data: products});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const getProductsByCategory = async (req, res) => {
   try {
-    const {categoryId} = req.query;
+    const { categoryId } = req.query;
     console.log("categoryId", categoryId);
     if (!categoryId) {
       return res
-       .status(400)
-       .json({ success: false, message: "categoryId is required" });
+        .status(400)
+        .json({ success: false, message: "categoryId is required" });
     }
     const products = await Product.find({ categoryId });
+    if (!products || products.length === 0) {
+      return res
+        .status(404)
+        .json({
+          success: false,
+          message: "No products found for this category",
+        });
+    }
+    return res.json({
+      success: true,
+      message: "Products fetched successfully",
+      data: products,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal Server Error", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
   }
-}
+};
 
-export { addProduct, getProductById };
+export { addProduct, getProductById,getProductsByCategory,getAllProducts };

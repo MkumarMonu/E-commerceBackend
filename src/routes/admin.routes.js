@@ -31,10 +31,9 @@ adminRouter.route("/getAllCategories").get(getAllCategories);
 adminRouter
   .route("/product")
   .post(productUpload.single("productImage"), addProduct)
-  .get(getProductById)
+  .get(getProductById);
 
-  adminRouter.route("/getAllProducts").get(getAllProducts)
- 
+adminRouter.route("/getAllProducts").get(getAllProducts);
 
 adminRouter.route("/getProductByCategry").get(getProductsByCategory);
 export { adminRouter };

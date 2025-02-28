@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Category from "../models/category.model.js";
+import { uploader } from "cloudinary";
 
 const AddCategory = async (req, res) => {
   try {
@@ -160,7 +161,35 @@ const deleteCategory = async (req, res) => {
         .status(400)
         .json({ success: false, message: "categoryId is required" });
     }
-    const category = await Category.findByIdAndDelete( categoryId );
+    const categoryimage = await Category.findById(categoryId);
+    if (!categoryimage) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
+    }
+    const imagePublicId = categoryimage.categoryImage
+      ?.split("/")
+      .slice(-3) // Extract last 3 parts (folder & filename)
+      .join("/")
+      .split(".")[0]; // Remove file extension // Extract public_id from URL
+
+    if (imagePublicId) {
+      try {
+        const cloudinaryResponse = await uploader.destroy(imagePublicId);
+        console.log("Cloudinary image deleted:", cloudinaryResponse);
+
+        if (cloudinaryResponse.result !== "ok") {
+          console.error(
+            "Error deleting image from Cloudinary:",
+            cloudinaryResponse
+          );
+        }
+      } catch (cloudinaryError) {
+        console.error("Cloudinary deletion error:", cloudinaryError);
+      }
+    }
+
+    const category = await Category.findByIdAndDelete(categoryId);
     if (!category) {
       return res
         .status(404)

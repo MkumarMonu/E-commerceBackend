@@ -9,9 +9,11 @@ import {
 import { getMulterUpload } from "../utills/cloudinary.js";
 import {
   addProduct,
+  deleteProduct,
   getAllProducts,
   getProductById,
   getProductsByCategory,
+  updateProduct,
 } from "../controllers/product.controller.js";
 const adminRouter = express.Router();
 const categoryUpload = getMulterUpload("Category-Data");
@@ -32,9 +34,9 @@ adminRouter
   .route("/product")
   .post(productUpload.single("productImage"), addProduct)
   .get(getProductById)
+  .put(productUpload.single("productImage"), updateProduct)
+  .delete(deleteProduct);
 
-  adminRouter.route("/getAllProducts").get(getAllProducts)
- 
-
+adminRouter.route("/getAllProducts").get(getAllProducts);
 adminRouter.route("/getProductByCategry").get(getProductsByCategory);
 export { adminRouter };

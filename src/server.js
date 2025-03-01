@@ -1,5 +1,6 @@
 import express, { urlencoded } from 'express'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import dbConnection from './db/dbConnect.js';
 import { userRouter } from './routes/user.routes.js';
 import { adminRouter } from './routes/admin.routes.js';
@@ -7,7 +8,7 @@ import { adminRouter } from './routes/admin.routes.js';
 // Load environment variables from.env file
 dotenv.config();
 const app = express();
-
+app.use(cors());
 // Middleware
 
 app.use(express.json({limit: "16kb"}))

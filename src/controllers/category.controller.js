@@ -116,7 +116,20 @@ const updateCategory = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Category not found" });
     }
+    if (categoryImage) {
+      const public_id = category.categoryImage
+        ?.split("/")
+        .slice(-3) // Extract last 3 parts (folder & filename)
+        .join("/")
+        .split(".")[0]; // Remove file extension // Extract public_id from URL
 
+      // Delete old image from Cloudinary
+      const result = await uploader.destroy(public_id);
+      console.log(result, "result");
+      if (!result.result) {
+        console.error("Failed to delete old image from Cloudinary:", result);
+      }
+    }
     // Prepare update object
     const updateData = {};
     if (categoryName) updateData.categoryName = categoryName;

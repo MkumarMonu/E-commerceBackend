@@ -1,5 +1,12 @@
 import express from "express";
-import { registerUser, verifyOtp } from "../controllers/user.controller.js";
+import {
+  forgotPassword,
+  loginUser,
+  registerUser,
+  resetPassword,
+  verifyOtp,
+  verifySignUpOtp,
+} from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { userValidationRules } from "../validators/user.validator.js";
 import { verifyToken } from "../utills/verifyAndGenerateToken.js";
@@ -10,6 +17,11 @@ userRouter
   .route("/register")
   .post(upload.single("avatar"), userValidationRules, registerUser);
 
-userRouter.route("/verifyOtp").post(verifyToken, verifyOtp);
+userRouter.route("/verifySignUpOtp").post(verifyToken, verifySignUpOtp);
+userRouter.route("/login").post(loginUser);
+userRouter.route("/verifyOtp").post(verifyOtp);
+
+userRouter.route("/forgotPassword").post(forgotPassword);
+userRouter.route("/resetPassword").post(resetPassword);
 
 export { userRouter };
